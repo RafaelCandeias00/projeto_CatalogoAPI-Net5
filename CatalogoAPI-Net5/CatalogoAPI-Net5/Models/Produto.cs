@@ -16,14 +16,14 @@ namespace CatalogoAPI_Net5.Models
         public string Nome { get; set; }
 
         [Required]
-        [StringLength(300)]
+        [MaxLength(300)]
         public string Descricao { get; set; }
 
         [Required]
         public decimal Preco { get; set; }
 
         [Required]
-        [StringLength(300)]
+        [MaxLength(300)]
         public string Imagem { get; set; }
 
         public DateTime DataCadastro { get; set; }
