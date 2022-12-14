@@ -1,9 +1,7 @@
 ﻿using CatalogoAPI_Net5.Context;
 using CatalogoAPI_Net5.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -14,7 +12,6 @@ namespace CatalogoAPI_Net5.Controllers
     public class ProdutosController : ControllerBase
     {
         private readonly AppDbContext _context;
-
 
         public ProdutosController(AppDbContext context)
         {
