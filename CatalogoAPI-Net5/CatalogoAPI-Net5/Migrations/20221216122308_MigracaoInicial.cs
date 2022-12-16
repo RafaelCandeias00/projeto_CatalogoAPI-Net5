@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace CatalogoAPI_Net5.Migrations
 {
-    public partial class Inicial : Migration
+    public partial class MigracaoInicial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

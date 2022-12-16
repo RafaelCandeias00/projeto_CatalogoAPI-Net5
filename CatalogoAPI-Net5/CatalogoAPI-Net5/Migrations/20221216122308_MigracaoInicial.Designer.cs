@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CatalogoAPI_Net5.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20221214184910_Inicial")]
-    partial class Inicial
+    [Migration("20221216122308_MigracaoInicial")]
+    partial class MigracaoInicial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
