@@ -1,4 +1,6 @@
-﻿using CatalogoAPI_Net5.Models;
+﻿using AutoMapper;
+using CatalogoAPI_Net5.DTOs;
+using CatalogoAPI_Net5.Models;
 using CatalogoAPI_Net5.Repository;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -13,26 +15,32 @@ namespace CatalogoAPI_Net5.Controllers
     public class ProdutosController : ControllerBase
     {
         private readonly IUnitOfWork _uof;
+        private readonly IMapper _mapper;
 
-        public ProdutosController(IUnitOfWork uof)
+        public ProdutosController(IUnitOfWork uof, IMapper mapper)
         {
             _uof = uof;
+            _mapper = mapper;
         }
 
         [HttpGet("menorpreco")]
-        public ActionResult<IEnumerable<Produto>> GetProdutosPrecos()
+        public ActionResult<IEnumerable<ProdutoDTO>> GetProdutosPrecos()
         {
-            return _uof.ProdutoRepository.GetProdutoPorPreco().ToList();
+            var produtos = _uof.ProdutoRepository.GetProdutoPorPreco().ToList();
+            var produtosDto = _mapper.Map<List<ProdutoDTO>>(produtos);
+            return produtosDto;
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<Produto>> Get()
+        public ActionResult<IEnumerable<ProdutoDTO>> Get()
         {
-            return _uof.ProdutoRepository.Get().ToList();
+            var produtos = _uof.ProdutoRepository.Get().ToList();
+            var produtosDto = _mapper.Map<List<ProdutoDTO>>(produtos);
+            return produtosDto;
         }
 
         [HttpGet("{id:int:min(1)}", Name ="ObterProduto")]
-        public ActionResult<Produto> Get([FromRoute] int id)
+        public ActionResult<ProdutoDTO> Get([FromRoute] int id)
         {
             try
             {
@@ -43,7 +51,8 @@ namespace CatalogoAPI_Net5.Controllers
                     return NotFound($"O produto com id {id} não foi encontrada!");
                 }
 
-                return produto;
+                var produtoDto = _mapper.Map<ProdutoDTO>(produto);
+                return produtoDto;
             }
             catch (Exception)
             {
@@ -53,15 +62,19 @@ namespace CatalogoAPI_Net5.Controllers
         }
 
         [HttpPost]
-        public ActionResult Post([FromBody] Produto produto)
+        public ActionResult Post([FromBody] ProdutoDTO produtoDto)
         {
             try
             {
+                var produto = _mapper.Map<Produto>(produtoDto);
+
                 _uof.ProdutoRepository.Add(produto);
                 _uof.Commit();
 
+                var produtoDTO = _mapper.Map<ProdutoDTO>(produto);
+
                 return new CreatedAtRouteResult("ObterProduto",
-                    new { id = produto.ProdutoId }, produto);
+                    new { id = produto.ProdutoId }, produtoDTO);
             }
             catch (Exception)
             {
@@ -71,14 +84,16 @@ namespace CatalogoAPI_Net5.Controllers
         }
 
         [HttpPut("{id:int}")]
-        public ActionResult Put(int id,[FromBody] Produto produto)
+        public ActionResult Put(int id,[FromBody] ProdutoDTO produtoDto)
         {
             try
             {
-                if (id != produto.ProdutoId)
+                if (id != produtoDto.ProdutoId)
                 {
                     return BadRequest($"Não foi possível atualizar o produto com id {id}!");
                 }
+
+                var produto = _mapper.Map<Produto>(produtoDto);
 
                 _uof.ProdutoRepository.Update(produto);
                 _uof.Commit();
@@ -92,7 +107,7 @@ namespace CatalogoAPI_Net5.Controllers
         }
 
         [HttpDelete("{id:int}")]
-        public ActionResult<Produto> Delete(int id)
+        public ActionResult<ProdutoDTO> Delete(int id)
         {
             try
             {
@@ -106,7 +121,8 @@ namespace CatalogoAPI_Net5.Controllers
                 _uof.ProdutoRepository.Delete(produto);
                 _uof.Commit();
 
-                return produto;
+                var produtoDto = _mapper.Map<ProdutoDTO>(produto);
+                return produtoDto;
             }
             catch (Exception)
             {

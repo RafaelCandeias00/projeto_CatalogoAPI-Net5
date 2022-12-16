@@ -30,7 +30,6 @@ namespace CatalogoAPI_Net5.Models
         public float Estoque { get; set; }
 
         public int CategoriaId { get; set; }
-        [JsonIgnore]
         public Categoria Categoria { get; set; }
     }
 }

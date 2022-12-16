@@ -1,4 +1,6 @@
+using AutoMapper;
 using CatalogoAPI_Net5.Context;
+using CatalogoAPI_Net5.DTOs.Mappings;
 using CatalogoAPI_Net5.Repository;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -29,6 +31,13 @@ namespace CatalogoAPI_Net5
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            var mappingConfig = new MapperConfiguration(mc =>
+            {
+                mc.AddProfile(new MappingProfile());
+            });
+            IMapper mapper = mappingConfig.CreateMapper();
+            services.AddSingleton(mapper);
+
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             string mySqlConnectionStr = Configuration.GetConnectionString("DefaultConnection");
