@@ -1,8 +1,7 @@
-﻿using CatalogoAPI_Net5.Context;
-using CatalogoAPI_Net5.Models;
+﻿using CatalogoAPI_Net5.Models;
+using CatalogoAPI_Net5.Repository;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,25 +12,31 @@ namespace CatalogoAPI_Net5.Controllers
     [ApiController]
     public class ProdutosController : ControllerBase
     {
-        private readonly AppDbContext _context;
+        private readonly IUnitOfWork _uof;
 
-        public ProdutosController(AppDbContext context)
+        public ProdutosController(IUnitOfWork uof)
         {
-            _context = context;
+            _uof = uof;
+        }
+
+        [HttpGet("menorpreco")]
+        public ActionResult<IEnumerable<Produto>> GetProdutosPrecos()
+        {
+            return _uof.ProdutoRepository.GetProdutoPorPreco().ToList();
         }
 
         [HttpGet]
         public ActionResult<IEnumerable<Produto>> Get()
         {
-            return _context.Produtos.AsNoTracking().ToList();
+            return _uof.ProdutoRepository.Get().ToList();
         }
 
-        [HttpGet("{id:int}", Name ="ObterProduto")]
+        [HttpGet("{id:int:min(1)}", Name ="ObterProduto")]
         public ActionResult<Produto> Get([FromRoute] int id)
         {
             try
             {
-                var produto = _context.Produtos.FirstOrDefault(p => p.ProdutoId == id);
+                var produto = _uof.ProdutoRepository.GetById(p => p.ProdutoId == id);
 
                 if (produto == null)
                 {
@@ -52,8 +57,8 @@ namespace CatalogoAPI_Net5.Controllers
         {
             try
             {
-                _context.Produtos.Add(produto);
-                _context.SaveChanges();
+                _uof.ProdutoRepository.Add(produto);
+                _uof.Commit();
 
                 return new CreatedAtRouteResult("ObterProduto",
                     new { id = produto.ProdutoId }, produto);
@@ -75,8 +80,8 @@ namespace CatalogoAPI_Net5.Controllers
                     return BadRequest($"Não foi possível atualizar o produto com id {id}!");
                 }
 
-                _context.Entry(produto).State = EntityState.Modified;
-                _context.SaveChanges();
+                _uof.ProdutoRepository.Update(produto);
+                _uof.Commit();
                 return Ok($"O produto com id {id} foi atualizado com sucesso!");
             }
             catch (Exception)
@@ -91,15 +96,15 @@ namespace CatalogoAPI_Net5.Controllers
         {
             try
             {
-                var produto = _context.Produtos.FirstOrDefault(p => p.ProdutoId == id);
+                var produto = _uof.ProdutoRepository.GetById(p => p.ProdutoId == id);
 
                 if (produto == null)
                 {
                     return NotFound($"O produto com id {id} não foi encontrado!");
                 }
 
-                _context.Produtos.Remove(produto);
-                _context.SaveChanges();
+                _uof.ProdutoRepository.Delete(produto);
+                _uof.Commit();
 
                 return produto;
             }

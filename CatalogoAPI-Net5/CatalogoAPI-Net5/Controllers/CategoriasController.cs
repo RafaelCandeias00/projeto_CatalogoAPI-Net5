@@ -1,5 +1,6 @@
 ﻿using CatalogoAPI_Net5.Context;
 using CatalogoAPI_Net5.Models;
+using CatalogoAPI_Net5.Repository;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -13,17 +14,17 @@ namespace CatalogoAPI_Net5.Controllers
     [ApiController]
     public class CategoriasController : ControllerBase
     {
-        private readonly AppDbContext _context;
+        private readonly IUnitOfWork _uof;
 
-        public CategoriasController(AppDbContext context)
+        public CategoriasController(IUnitOfWork uof)
         {
-            _context = context;
+            _uof = uof;
         }
 
         [HttpGet("produtos")]
         public ActionResult<IEnumerable<Categoria>> GetCategoriasProdutos()
         {
-            return _context.Categorias.Include(p => p.Produtos).ToList();
+            return _uof.CategoriaRepository.GetCategoriasProdutos().ToList();
         }
 
         [HttpGet]
@@ -31,7 +32,7 @@ namespace CatalogoAPI_Net5.Controllers
         {
             try
             {
-                return _context.Categorias.AsNoTracking().ToList();
+                return _uof.CategoriaRepository.Get().ToList();
             }
             catch (Exception)
             {
@@ -44,7 +45,7 @@ namespace CatalogoAPI_Net5.Controllers
         {
             try
             {
-                var categoria = _context.Categorias.FirstOrDefault(c => c.CategoriaId == id);
+                var categoria = _uof.CategoriaRepository.GetById(c => c.CategoriaId == id);
 
                 if (categoria == null)
                 {
@@ -65,8 +66,8 @@ namespace CatalogoAPI_Net5.Controllers
         {
             try
             {
-                _context.Categorias.Add(categoria);
-                _context.SaveChanges();
+                _uof.CategoriaRepository.Add(categoria);
+                _uof.Commit();
 
                 return new CreatedAtRouteResult("ObterCategoria",
                     new { id = categoria.CategoriaId }, categoria);
@@ -87,8 +88,8 @@ namespace CatalogoAPI_Net5.Controllers
                 {
                     return BadRequest($"Não foi possível atualizar a categoria com id {id}!");
                 }
-                _context.Entry(categoria).State = EntityState.Modified;
-                _context.SaveChanges();
+                _uof.CategoriaRepository.Update(categoria);
+                _uof.Commit();
                 return Ok($"A categoria com id {id} foi atualizada com sucesso!");
             }
             catch (Exception)
@@ -102,15 +103,15 @@ namespace CatalogoAPI_Net5.Controllers
         {
             try
             {
-                var categoria = _context.Categorias.FirstOrDefault(c => c.CategoriaId == id);
+                var categoria = _uof.CategoriaRepository.GetById(c => c.CategoriaId == id);
 
                 if (categoria == null)
                 {
                     return NotFound($"A categoria com id {id} não foi encontrada!");
                 }
 
-                _context.Categorias.Remove(categoria);
-                _context.SaveChanges();
+                _uof.CategoriaRepository.Delete(categoria);
+                _uof.Commit();
 
                 return categoria;
             }

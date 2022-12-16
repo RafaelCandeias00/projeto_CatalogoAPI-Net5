@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace CatalogoAPI_Net5.Models
 {
@@ -20,6 +21,7 @@ namespace CatalogoAPI_Net5.Models
         [MaxLength(300)]
         public string ImagemUrl { get; set; }
 
+        [JsonIgnore]
         public IEnumerable<Produto> Produtos { get; set; }
         public Categoria()
         {

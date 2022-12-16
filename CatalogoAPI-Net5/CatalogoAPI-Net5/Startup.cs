@@ -1,4 +1,5 @@
 using CatalogoAPI_Net5.Context;
+using CatalogoAPI_Net5.Repository;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -28,6 +29,8 @@ namespace CatalogoAPI_Net5
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+
             string mySqlConnectionStr = Configuration.GetConnectionString("DefaultConnection");
             services.AddDbContextPool<AppDbContext>(options =>
                    options.UseMySql(mySqlConnectionStr, 
