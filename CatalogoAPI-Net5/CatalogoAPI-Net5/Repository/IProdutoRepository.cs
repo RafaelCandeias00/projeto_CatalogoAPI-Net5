@@ -9,6 +9,6 @@ namespace CatalogoAPI_Net5.Repository
     public interface IProdutoRepository : IRepository<Produto>
     {
         Task<IEnumerable<Produto>> GetProdutoPorPreco();
-        PagedList<Produto> GetProdutos(ProdutosParameters produtosParameters);
+        Task<PagedList<Produto>> GetProdutos(ProdutosParameters produtosParameters);
     }
 }

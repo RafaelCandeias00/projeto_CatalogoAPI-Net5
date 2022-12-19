@@ -17,9 +17,9 @@ namespace CatalogoAPI_Net5.Repository
             return await Get().Include(x => x.Produtos).ToListAsync();
         }
 
-        public PagedList<Categoria> GetCategorias(CategoriasParameters categoriasParameters)
+        public async Task<PagedList<Categoria>> GetCategorias(CategoriasParameters categoriasParameters)
         {
-            return PagedList<Categoria>.ToPagedList(Get().OrderBy(on => on.Nome), 
+            return await PagedList<Categoria>.ToPagedList(Get().OrderBy(on => on.Nome), 
                 categoriasParameters.PageNumber, categoriasParameters.PageSize);
         }
     }

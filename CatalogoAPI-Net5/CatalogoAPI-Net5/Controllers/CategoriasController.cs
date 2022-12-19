@@ -37,11 +37,11 @@ namespace CatalogoAPI_Net5.Controllers
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<CategoriaDTO>> Get([FromQuery] CategoriasParameters categoriasParameters)
+        public async Task<ActionResult<IEnumerable<CategoriaDTO>>> Get([FromQuery] CategoriasParameters categoriasParameters)
         {
             try
             {
-                var categorias = _uof.CategoriaRepository.GetCategorias(categoriasParameters);
+                var categorias = await _uof.CategoriaRepository.GetCategorias(categoriasParameters);
 
                 var metadata = new
                 {
