@@ -15,13 +15,16 @@ namespace CatalogoAPI_Net5.Repository
             return Get().OrderBy(c => c.Preco).ToList();
         }
 
-        public IEnumerable<Produto> GetProdutos(ProdutosParameters produtosParameters)
+        public PagedList<Produto> GetProdutos(ProdutosParameters produtosParameters)
         {
-            return Get()
+            /*return Get()
                 .OrderBy(on => on.Nome)
                 .Skip((produtosParameters.PageNumber - 1) * produtosParameters.PageSize)
                 .Take(produtosParameters.PageSize)
-                .ToList();
+                .ToList();*/
+
+            return PagedList<Produto>.ToPagedList(Get().OrderBy(on => on.Nome),
+                produtosParameters.PageNumber, produtosParameters.PageSize);
         }
     }
 }
