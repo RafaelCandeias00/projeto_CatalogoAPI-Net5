@@ -9,6 +9,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace CatalogoAPI_Net5.Controllers
 {
@@ -26,9 +27,9 @@ namespace CatalogoAPI_Net5.Controllers
         }
 
         [HttpGet("menorpreco")]
-        public ActionResult<IEnumerable<ProdutoDTO>> GetProdutosPrecos()
+        public async Task<ActionResult<IEnumerable<ProdutoDTO>>> GetProdutosPrecos()
         {
-            var produtos = _uof.ProdutoRepository.GetProdutoPorPreco().ToList();
+            var produtos = await _uof.ProdutoRepository.GetProdutoPorPreco();
             var produtosDto = _mapper.Map<List<ProdutoDTO>>(produtos);
             return produtosDto;
         }
@@ -54,11 +55,11 @@ namespace CatalogoAPI_Net5.Controllers
         }
 
         [HttpGet("{id:int:min(1)}", Name ="ObterProduto")]
-        public ActionResult<ProdutoDTO> Get([FromRoute] int id)
+        public async Task<ActionResult<ProdutoDTO>> Get([FromRoute] int id)
         {
             try
             {
-                var produto = _uof.ProdutoRepository.GetById(p => p.ProdutoId == id);
+                var produto = await _uof.ProdutoRepository.GetById(p => p.ProdutoId == id);
 
                 if (produto == null)
                 {
@@ -76,14 +77,14 @@ namespace CatalogoAPI_Net5.Controllers
         }
 
         [HttpPost]
-        public ActionResult Post([FromBody] ProdutoDTO produtoDto)
+        public async Task<ActionResult> Post([FromBody] ProdutoDTO produtoDto)
         {
             try
             {
                 var produto = _mapper.Map<Produto>(produtoDto);
 
                 _uof.ProdutoRepository.Add(produto);
-                _uof.Commit();
+                await _uof.Commit();
 
                 var produtoDTO = _mapper.Map<ProdutoDTO>(produto);
 
@@ -98,7 +99,7 @@ namespace CatalogoAPI_Net5.Controllers
         }
 
         [HttpPut("{id:int}")]
-        public ActionResult Put(int id,[FromBody] ProdutoDTO produtoDto)
+        public async Task<ActionResult> Put(int id,[FromBody] ProdutoDTO produtoDto)
         {
             try
             {
@@ -110,7 +111,7 @@ namespace CatalogoAPI_Net5.Controllers
                 var produto = _mapper.Map<Produto>(produtoDto);
 
                 _uof.ProdutoRepository.Update(produto);
-                _uof.Commit();
+                await _uof.Commit();
                 return Ok($"O produto com id {id} foi atualizado com sucesso!");
             }
             catch (Exception)
@@ -121,11 +122,11 @@ namespace CatalogoAPI_Net5.Controllers
         }
 
         [HttpDelete("{id:int}")]
-        public ActionResult<ProdutoDTO> Delete(int id)
+        public async Task<ActionResult<ProdutoDTO>> Delete(int id)
         {
             try
             {
-                var produto = _uof.ProdutoRepository.GetById(p => p.ProdutoId == id);
+                var produto = await _uof.ProdutoRepository.GetById(p => p.ProdutoId == id);
 
                 if (produto == null)
                 {
@@ -133,7 +134,7 @@ namespace CatalogoAPI_Net5.Controllers
                 }
 
                 _uof.ProdutoRepository.Delete(produto);
-                _uof.Commit();
+                await _uof.Commit();
 
                 var produtoDto = _mapper.Map<ProdutoDTO>(produto);
                 return produtoDto;
