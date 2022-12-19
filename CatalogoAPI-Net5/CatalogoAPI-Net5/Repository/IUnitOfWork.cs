@@ -1,9 +1,11 @@
-﻿namespace CatalogoAPI_Net5.Repository
+﻿using System.Threading.Tasks;
+
+namespace CatalogoAPI_Net5.Repository
 {
     public interface IUnitOfWork
     {
         IProdutoRepository ProdutoRepository { get; }
         ICategoriaRepository CategoriaRepository { get; }
-        void Commit();
+        Task Commit();
     }
 }

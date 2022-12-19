@@ -1,8 +1,10 @@
 ﻿using CatalogoAPI_Net5.Context;
 using CatalogoAPI_Net5.Models;
 using CatalogoAPI_Net5.Pagination;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace CatalogoAPI_Net5.Repository
 {
@@ -10,9 +12,9 @@ namespace CatalogoAPI_Net5.Repository
     {
         public ProdutoRepository(AppDbContext context) : base(context) { }
 
-        public IEnumerable<Produto> GetProdutoPorPreco()
+        public async Task<IEnumerable<Produto>> GetProdutoPorPreco()
         {
-            return Get().OrderBy(c => c.Preco).ToList();
+            return await Get().OrderBy(c => c.Preco).ToListAsync();
         }
 
         public PagedList<Produto> GetProdutos(ProdutosParameters produtosParameters)

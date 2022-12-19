@@ -4,6 +4,7 @@ using CatalogoAPI_Net5.Pagination;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace CatalogoAPI_Net5.Repository
 {
@@ -11,9 +12,9 @@ namespace CatalogoAPI_Net5.Repository
     {
         public CategoriaRepository(AppDbContext context) : base(context) { }
 
-        public IEnumerable<Categoria> GetCategoriasProdutos()
+        public async Task<IEnumerable<Categoria>> GetCategoriasProdutos()
         {
-            return Get().Include(x => x.Produtos);
+            return await Get().Include(x => x.Produtos).ToListAsync();
         }
 
         public PagedList<Categoria> GetCategorias(CategoriasParameters categoriasParameters)

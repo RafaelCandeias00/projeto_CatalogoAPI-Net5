@@ -2,12 +2,13 @@
 using CatalogoAPI_Net5.Pagination;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace CatalogoAPI_Net5.Repository
 {
     public interface IProdutoRepository : IRepository<Produto>
     {
-        IEnumerable<Produto> GetProdutoPorPreco();
+        Task<IEnumerable<Produto>> GetProdutoPorPreco();
         PagedList<Produto> GetProdutos(ProdutosParameters produtosParameters);
     }
 }
