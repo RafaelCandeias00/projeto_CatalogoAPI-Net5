@@ -1,5 +1,6 @@
 ﻿using CatalogoAPI_Net5.Context;
 using CatalogoAPI_Net5.Models;
+using CatalogoAPI_Net5.Pagination;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -12,6 +13,15 @@ namespace CatalogoAPI_Net5.Repository
         public IEnumerable<Produto> GetProdutoPorPreco()
         {
             return Get().OrderBy(c => c.Preco).ToList();
+        }
+
+        public IEnumerable<Produto> GetProdutos(ProdutosParameters produtosParameters)
+        {
+            return Get()
+                .OrderBy(on => on.Nome)
+                .Skip((produtosParameters.PageNumber - 1) * produtosParameters.PageSize)
+                .Take(produtosParameters.PageSize)
+                .ToList();
         }
     }
 }
