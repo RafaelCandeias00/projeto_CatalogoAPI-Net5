@@ -46,7 +46,7 @@ namespace CatalogoAPI_Net5
 
             string mySqlConnectionStr = Configuration.GetConnectionString("DefaultConnection");
             services.AddDbContextPool<AppDbContext>(options =>
-                   options.UseMySql(mySqlConnectionStr, 
+                   options.UseMySql(mySqlConnectionStr,
                         ServerVersion.AutoDetect(mySqlConnectionStr)));
 
             services.AddIdentity<IdentityUser, IdentityRole>()
@@ -59,15 +59,15 @@ namespace CatalogoAPI_Net5
              * e a chave usando a chave secreta valida a assinatura
              */
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).
-                AddJwtBearer(options => 
+                AddJwtBearer(options =>
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
-                    ValidateIssuer= true,
-                    ValidateAudience= true,
-                    ValidateLifetime= true,
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
                     ValidAudience = Configuration["TokenConfiguration:Audience"],
                     ValidIssuer = Configuration["TokenConfiguration:Issuer"],
-                    ValidateIssuerSigningKey= true,
+                    ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(
                         Encoding.UTF8.GetBytes(Configuration["Jwt:key"]))
                 });
@@ -79,6 +79,31 @@ namespace CatalogoAPI_Net5
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "CatalogoAPI_Net5", Version = "v1" });
+
+                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
+                {
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.ApiKey,
+                    Scheme = "Bearer",
+                    BearerFormat = "JWT",
+                    In = ParameterLocation.Header,
+                    Description = "Header de autorização JWT usando o esquema Bearer.\r\n\r\nInforme 'Bearer'[espaço] e o seu token.\r\n\r\nExemplo: \'Bearer 12345abcdef\'",
+                });
+
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                   {
+                      new OpenApiSecurityScheme
+                      {
+                         Reference = new OpenApiReference
+                         {
+                             Type = ReferenceType.SecurityScheme,
+                             Id = "Bearer"
+                         }
+                      },
+                      new string[] {}
+                   }
+                });
             });
         }
 
