@@ -4,6 +4,7 @@ using CatalogoAPI_Net5.DTOs;
 using CatalogoAPI_Net5.Models;
 using CatalogoAPI_Net5.Pagination;
 using CatalogoAPI_Net5.Repository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -15,6 +16,7 @@ using System.Threading.Tasks;
 
 namespace CatalogoAPI_Net5.Controllers
 {
+    [Authorize(AuthenticationSchemes = "Bearer")]
     [Route("api/[controller]")]
     [ApiController]
     public class CategoriasController : ControllerBase
