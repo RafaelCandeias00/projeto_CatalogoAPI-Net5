@@ -19,6 +19,7 @@ namespace CatalogoAPI_Net5.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Produces("application/json")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class CategoriasController : ControllerBase
     {
@@ -66,6 +67,11 @@ namespace CatalogoAPI_Net5.Controllers
             }
         }
 
+        /// <summary>
+        /// Obtem uma Categoria pelo seu Id
+        /// </summary>
+        /// <param name="id">Código da categoria</param>
+        /// <returns>Objetos Categoria</returns>
         [HttpGet("{id:int}", Name = "ObterCategoria")]
         public async Task<ActionResult<CategoriaDTO>> Get([FromRoute] int id)
         {
@@ -88,6 +94,21 @@ namespace CatalogoAPI_Net5.Controllers
             
         }
 
+        /// <summary>
+        /// Inclui uma nova categoria
+        /// </summary>
+        /// <remarks>
+        /// Exemplo de request:
+        ///     
+        ///     POST api/categorias
+        ///     {
+        ///         "nome": "categoria1",
+        ///         "imagemUrl": "imagem.jpg"
+        ///     }
+        /// </remarks>
+        /// <param name="categoriaDto">Objeto Categoria</param>
+        /// <returns>O objeto Categoria incluida</returns>
+        /// <remarks>Retorna um objeto Categoria incluído</remarks>
         [HttpPost]
         public async Task<ActionResult> Post([FromBody] CategoriaDTO categoriaDto)
         {

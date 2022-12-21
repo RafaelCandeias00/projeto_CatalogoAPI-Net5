@@ -12,6 +12,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System;
+using System.IO;
+using System.Reflection;
 using System.Text;
 
 namespace CatalogoAPI_Net5
@@ -73,7 +76,17 @@ namespace CatalogoAPI_Net5
             });
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "CatalogoAPI_Net5", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { 
+                    Title = "CatalogoAPI_Net5", 
+                    Version = "v1",
+                    Description = "Catálogo de Produtos e Categorias",
+                    Contact = new OpenApiContact
+                    {
+                        Name = "Rafael Candeias",
+                        Email = "rafaelcandeias39@gmail.com",
+                        Url = new Uri("https://www.linkedin.com/in/rafael-candeias/")
+                    }
+                });
 
                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
                 {
@@ -99,6 +112,10 @@ namespace CatalogoAPI_Net5
                       new string[] {}
                    }
                 });
+
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                c.IncludeXmlComments(xmlPath);
             });
         }
 

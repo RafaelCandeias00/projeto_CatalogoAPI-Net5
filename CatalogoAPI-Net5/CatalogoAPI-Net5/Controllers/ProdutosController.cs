@@ -17,6 +17,7 @@ namespace CatalogoAPI_Net5.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Produces("application/json")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class ProdutosController : ControllerBase
     {
@@ -37,6 +38,11 @@ namespace CatalogoAPI_Net5.Controllers
             return produtosDto;
         }
 
+        /// <summary>
+        /// Exibe uma relação de produtos
+        /// </summary>
+        /// <param name="produtosParameters"></param>
+        /// <returns>Retorna uma lista de objetos Produto</returns>
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ProdutoDTO>>> Get([FromQuery] ProdutosParameters produtosParameters)
         {
@@ -57,6 +63,11 @@ namespace CatalogoAPI_Net5.Controllers
             return produtosDto;
         }
 
+        /// <summary>
+        /// Obtem um produto pelo seu identificador produtoId
+        /// </summary>
+        /// <param name="id">Código do produto</param>
+        /// <returns>Um objeto Produto</returns>
         [HttpGet("{id:int:min(1)}", Name ="ObterProduto")]
         public async Task<ActionResult<ProdutoDTO>> Get([FromRoute] int id)
         {
