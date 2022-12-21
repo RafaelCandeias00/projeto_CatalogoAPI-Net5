@@ -8,6 +8,9 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace CatalogoAPI_Net5.Controllers
 {
@@ -27,6 +30,10 @@ namespace CatalogoAPI_Net5.Controllers
             _configuration = configuration;
         }
 
+        /// <summary>
+        /// Verifica a data em que a AutorizaController está sendo usada
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public ActionResult<string> Get()
         {
@@ -39,6 +46,9 @@ namespace CatalogoAPI_Net5.Controllers
         /// <param name="model">Um objeto UsuarioDTO</param>
         /// <returns>Status 200 e o token para o cliente</returns>
         [HttpPost("register")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(IEnumerable<IdentityError>), StatusCodes.Status400BadRequest)]
+        [ProducesDefaultResponseType]
         public async Task<ActionResult> RegisterUser([FromBody] UsuarioDTO model)
         {
             var user = new IdentityUser
@@ -66,6 +76,9 @@ namespace CatalogoAPI_Net5.Controllers
         /// <returns>Status 200 e o token para o cliente</returns>
         /// <remarks>Retorna o Status 200 e o token para novo </remarks>
         [HttpPost("login")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ModelStateDictionary), StatusCodes.Status400BadRequest)]
+        [ProducesDefaultResponseType]
         public async Task<ActionResult> Login([FromBody] UsuarioDTO userInfo)
         {
             // verifica as credenciais do usuário e retorna um valor

@@ -32,6 +32,10 @@ namespace CatalogoAPI_Net5.Controllers
             _mapper = mapper;
         }
 
+        /// <summary>
+        /// Exibe uma lista de categoria contendo os produtos relacionados
+        /// </summary>
+        /// <returns>Retorna uma lista de objetos Categoria contendo produtos relacionados</returns>
         [HttpGet("produtos")]
         public async Task<ActionResult<IEnumerable<CategoriaDTO>>> GetCategoriasProdutos()
         {
@@ -40,7 +44,15 @@ namespace CatalogoAPI_Net5.Controllers
             return categoriasDto;
         }
 
+        /// <summary>
+        /// Exibe uma relação de categorias
+        /// </summary>
+        /// <param name="categoriasParameters"></param>
+        /// <returns>Retorna uma lista de objetos Categoria</returns>
         [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
+        [ProducesDefaultResponseType]
         public async Task<ActionResult<IEnumerable<CategoriaDTO>>> Get([FromQuery] CategoriasParameters categoriasParameters)
         {
             try
@@ -71,8 +83,12 @@ namespace CatalogoAPI_Net5.Controllers
         /// Obtem uma Categoria pelo seu Id
         /// </summary>
         /// <param name="id">Código da categoria</param>
-        /// <returns>Objetos Categoria</returns>
+        /// <returns>Um objeto Categoria</returns>
         [HttpGet("{id:int}", Name = "ObterCategoria")]
+        [ProducesResponseType(typeof(CategoriaDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
+        [ProducesDefaultResponseType]
         public async Task<ActionResult<CategoriaDTO>> Get([FromRoute] int id)
         {
             try
@@ -110,6 +126,10 @@ namespace CatalogoAPI_Net5.Controllers
         /// <returns>O objeto Categoria incluida</returns>
         /// <remarks>Retorna um objeto Categoria incluído</remarks>
         [HttpPost]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
+        [ProducesDefaultResponseType]
         public async Task<ActionResult> Post([FromBody] CategoriaDTO categoriaDto)
         {
             try
@@ -131,7 +151,27 @@ namespace CatalogoAPI_Net5.Controllers
             
         }
 
+        /// <summary>
+        /// Alterar uma categoria
+        /// </summary>
+        /// <remarks>
+        /// Exemplo de request:
+        ///     
+        ///     PUT api/categorias/0
+        ///     {
+        ///         "categoriaId": 0,
+        ///         "nome": "string",
+        ///         "imagemUrl": "imagem.jpg"
+        ///     }
+        /// </remarks>
+        /// <param name="id">Id da categoria</param>
+        /// <param name="categoriaDto">O objeto categoria alterado</param>
+        /// <returns>Retorna um objeto categoria alterado</returns>
         [HttpPut("{id:int}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
+        [ProducesDefaultResponseType]
         public async Task<ActionResult> Put(int id, [FromBody] CategoriaDTO categoriaDto)
         {
             try
@@ -153,7 +193,16 @@ namespace CatalogoAPI_Net5.Controllers
             }
         }
 
+        /// <summary>
+        /// Deleta uma categoria
+        /// </summary>
+        /// <param name="id">Id da categoria para ser deletado.</param>
+        /// <returns>Retorna um objeto produto deletado.</returns>
         [HttpDelete("{id:int}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
+        [ProducesDefaultResponseType]
         public async Task<ActionResult<CategoriaDTO>> Delete(int id)
         {
             try
